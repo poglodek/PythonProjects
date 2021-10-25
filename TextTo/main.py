@@ -1,6 +1,7 @@
 import os
 import cv2
 import gtts
+import shutil
 import requests
 from playsound import playsound
 from bs4 import BeautifulSoup
@@ -13,8 +14,6 @@ text_file =""
 distinct_words = [] 
 distinct_words_index = 0
 
-if os.path.isdir("./audio") == False:
-    os.mkdir("./audio")
 
 with open(text_file_name) as text:
     text_file = text.read()
@@ -23,7 +22,7 @@ distinct_words = list(set(words))
 
 print("Record a audio")
 tts = gtts.gTTS(str(words), lang="pl")
-tts.save("audio.mp3")
+tts.save(audio_file_name)
 
 print("Recored audio")
 
@@ -68,5 +67,7 @@ for word in words:
     distinct_words_index += 1
     print(distinct_words_index/len(words)*100)
 print("video ready")
-cv2.destroyAllWindows()
 video.release()
+cv2.destroyAllWindows()
+os.remove(audio_file_name)
+shutil.rmtree('./photos')

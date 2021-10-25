@@ -1,5 +1,6 @@
-import gtts
 import os
+import cv2
+import gtts
 import requests
 from playsound import playsound
 from bs4 import BeautifulSoup
@@ -21,13 +22,8 @@ words = text_file.replace("\n"," ").split(" ")
 distinct_words = list(set(words))
 
 print("Record a audio")
-for word in distinct_words:
-    distinct_words_index += 1
-    print(distinct_words_index/len(distinct_words)*100)
-    if word == "":
-        continue
-    tts = gtts.gTTS(str(word), lang="pl")
-    tts.save("./audio/"+ word + ".mp3")
+tts = gtts.gTTS(str(words), lang="pl")
+tts.save("audio.mp3")
 
 print("Recored audio")
 
@@ -56,3 +52,21 @@ for word in distinct_words:
     distinct_words_index += 1
     print(distinct_words_index/len(distinct_words)*100)
 print("Images downloaded")
+
+
+print("Creating a video")
+distinct_words_index = 0
+images = [img for img in os.listdir("./photos/") if img.endswith(".jpg")]
+frame = cv2.imread(os.path.join("./photos/", images[0]))
+height, width, layers = frame.shape
+
+video = cv2.VideoWriter("video.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 1, (width,height))
+for word in words:
+    if word == "." or word == "":
+        continue
+    video.write(cv2.imread("./photos/"+ word + ".jpg"))
+    distinct_words_index += 1
+    print(distinct_words_index/len(words)*100)
+print("video ready")
+cv2.destroyAllWindows()
+video.release()
